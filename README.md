@@ -23,9 +23,9 @@ The main contributions of this work are detailed below:
 
 * First, this paper details a novel sampling framework that uses data-driven, sampling methods to design nonuniform sampling distributions to select relevant test points for scarce data, regression problems.
 
-* Additionally, we detail four difference implementations: one previously explored in \cite{pourkamali2023regression} and used to benchmark performance for three new distribution designs.
+* Additionally, we detail four different implementationsfor three new distribution designs.
 
 * Furthermore, we demonstrate in all four implementations that a more accurate test error estimation is achieved with a reduced sample size for the test set.
 
-* Finally, we demonstrate the benefits of leveraging built-in stochastic output capabilities in Tensorflow Probability \cite{tf2015} package to reduce computational time for this sampling framework.
-\end{enumerate}
+* Finally, we demonstrate the benefits of leveraging built-in stochastic output capabilities in Tensorflow Probability package to reduce computational time for this sampling framework.
+
