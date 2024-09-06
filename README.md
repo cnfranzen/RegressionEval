@@ -1,6 +1,6 @@
 # Evaluation of Regression Model using Active Testing to Reduce Data Requirements
 
-<font align="center">
+<center>
 <b> Abstract </b>
     <br>
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus elit, vesti-
@@ -14,10 +14,13 @@ ac, nunc. Praesent eget sem vel leo ultrices bibendum. Aenean faucibus. Morbi
 dolor nulla, malesuada eu, pulvinar at, mollis ac, nulla. Curabitur auctor semper
 nulla. Donec varius orci eget risus. Duis nibh mi, congue eu, accumsan eleifend,
 sagittis quis, diam. Duis eget orci sit amet orci dignissim rutrum.
-</font>
+</center>
+
+<br>
 
 <b>Keywords:</b>Predictive modeling, Neural networks, Scarce data, Active Testing, Test Sample, Sampling, Small data
-
+<br>
+<br>
 The main contributions of this work are detailed below:
     * First, this paper details a novel sampling framework that uses data-driven, sampling methods to design nonuniform sampling distributions to select relevant test points for scarce data, regression problems.
     * Additionally, we detail four difference implementations: one previously explored in \cite{pourkamali2023regression} and used to benchmark performance for three new distribution designs.
