@@ -29,3 +29,5 @@ The main contributions of this work are detailed below:
 
 * Finally, we demonstrate the benefits of leveraging built-in stochastic output capabilities in Tensorflow Probability package to reduce computational time for this sampling framework.
 
+Compatibility for TFP and Keras_Tuner have been compromised with recent updates.  Use the following environment for successful run of files: Scikit-learn v1.4; Numpy v1.26.4; Pandas v2.2.1; Matplotlib v3.9; Keras v2.15; TF v2.15; TFP v0.23; KT v1.4.7.
+
