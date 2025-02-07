@@ -1,30 +1,27 @@
+# Scikit-learn v1.4; Numpy v1.26.4; Pandas v2.2.1; Matplotlib v3.9
+# Keras v2.15; TF v2.15; TFP v0.23; KT v1.4.7
+
 import numpy as np 
-import pandas as pd
-import keras
-import matplotlib.pyplot as plt
-from sklearn.datasets import make_regression
-from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.model_selection import train_test_split
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.layers import Lambda
-from keras import backend as K
-import tensorflow as tf
-import tensorflow_probability as tfp
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from keras.models import Sequential  
+from keras.layers import Dense
+import tensorflow as tf  
+import tensorflow_probability as tfp  
 from keras.optimizers import RMSprop
 import time
-
-import keras_tuner
+import keras_tuner  
+from keras.layers import Lambda
+from keras import backend as K
 
 tfd = tfp.distributions
 tfpl = tfp.layers
 
 def PermaDropout(rate):
-    return Lambda(lambda x: K.dropout(x, level=rate))
+   return Lambda(lambda x: K.dropout(x, level=rate))
 
 def quadratic_loss(y, y_hat): 
     return np.power((y - y_hat), 2)
-
 
 def find_mean_var_model(X_train, y_train, X_test, reg_evaluator, n_reps = 30, model_type='boot'):
     
@@ -298,14 +295,14 @@ def create_model(X_train, y_train, model_type, min_layers, max_layers, min_value
                 activation = 'relu', 
                 input_shape = (X_train.shape[1],) 
             ))
-            model.add(PermaDropout(rate = 0.5))
+            model.add(PermaDropout(0.5))
             
             for ind in range(hp.Int('num_layers', min_layers, max_layers)):
                 model.add(Dense(
                     units = hp.Int("units_" + str(ind), min_value=min_value, max_value=max_value, step=step),
                     activation = "relu"
                 ))
-                model.add(PermaDropout(rate = 0.5))
+                model.add(PermaDropout(0.5))
             
             # Add the output layer with the specified output shape 
             model.add(Dense(1))
@@ -357,12 +354,13 @@ def create_model(X_train, y_train, model_type, min_layers, max_layers, min_value
             max_epochs = 10,
             factor = 3,
             overwrite = True)
-            
+        
         tuner.search(X_train, y_train, epochs=5)
 
         best_model = tuner.get_best_hyperparameters(5)  # Pull best hp from 
 
         reg_evaluator = build_model(best_model[0])
+
     return reg_evaluator
 
 def plot_model(X_train, y_train, reg_evaluator):
