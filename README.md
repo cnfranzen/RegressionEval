@@ -1,4 +1,4 @@
-# Evaluation of Regression Model Fit using Active Testing to Reduce Data Requirements
+# Advancing Model Evaluation: Reducing Test Data Requirements for Regression with Small Datasets
 
 <p align="center">
 <b> Abstract </b>
