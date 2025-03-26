@@ -1,28 +1,27 @@
+# Scikit-learn v1.4; Numpy v1.26.4; Pandas v2.2.1; Matplotlib v3.9
+# Keras v2.15; TF v2.15; TFP v0.23; KT v1.4.7
+
 import numpy as np 
-import pandas as pd
-import keras
-import matplotlib.pyplot as plt
-from keras.models import Sequential
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from keras.models import Sequential  
 from keras.layers import Dense
-from keras.layers import Lambda
-from keras import backend as K
-import tensorflow as tf
-import tensorflow_probability as tfp
+import tensorflow as tf  
+import tensorflow_probability as tfp  
 from keras.optimizers import RMSprop
 import time
-
-import keras_tuner
+import keras_tuner  
+from keras.layers import Lambda
+from keras import backend as K
 
 tfd = tfp.distributions
 tfpl = tfp.layers
 
 def PermaDropout(rate):
-    return Lambda(lambda x: K.dropout(x, level=rate))
+   return Lambda(lambda x: K.dropout(x, level=rate))
 
 def quadratic_loss(y, y_hat): 
     return np.power((y - y_hat), 2)
-
-negloglik = lambda y, rv_y: -rv_y.log_prob(y)
 
 def find_mean_var_model(X_train, y_train, X_test, reg_evaluator, n_reps = 30, model_type='boot'):
     
@@ -279,7 +278,8 @@ def create_model(X_train, y_train, model_type, min_layers, max_layers, min_value
             objective = "mean_squared_error",
             max_epochs = 10,
             factor = 3,
-            overwrite = True)
+            directory = "tune_dir",
+            project_name = "boot")
             
         tuner.search(X_train, y_train, epochs=5)
 
@@ -296,14 +296,14 @@ def create_model(X_train, y_train, model_type, min_layers, max_layers, min_value
                 activation = 'relu', 
                 input_shape = (X_train.shape[1],) 
             ))
-            model.add(PermaDropout(rate = 0.5))
+            model.add(PermaDropout(0.5))
             
             for ind in range(hp.Int('num_layers', min_layers, max_layers)):
                 model.add(Dense(
                     units = hp.Int("units_" + str(ind), min_value=min_value, max_value=max_value, step=step),
                     activation = "relu"
                 ))
-                model.add(PermaDropout(rate = 0.5))
+                model.add(PermaDropout(0.5))
             
             # Add the output layer with the specified output shape 
             model.add(Dense(1))
@@ -317,7 +317,8 @@ def create_model(X_train, y_train, model_type, min_layers, max_layers, min_value
             objective = "mean_squared_error",
             max_epochs = 10,
             factor = 3,
-            overwrite = True)
+            directory = "tune_dir",
+            project_name = "drop")
             
         tuner.search(X_train, y_train, epochs=5)
 
@@ -345,7 +346,7 @@ def create_model(X_train, y_train, model_type, min_layers, max_layers, min_value
             model.add(Dense(tfpl.IndependentNormal.params_size(event_shape=1)))
             model.add(tfpl.IndependentNormal(event_shape=1))
 
-            model.compile(optimizer='adam', loss=negloglik, metrics=['mean_squared_error'])
+            model.compile(optimizer='adam', loss='mse', metrics=['mean_squared_error'])
 
             return model
 
@@ -354,13 +355,15 @@ def create_model(X_train, y_train, model_type, min_layers, max_layers, min_value
             objective = "mean_squared_error",
             max_epochs = 10,
             factor = 3,
-            overwrite = True)
-            
+            directory = "tune_dir",
+            project_name = "prob")
+        
         tuner.search(X_train, y_train, epochs=5)
 
         best_model = tuner.get_best_hyperparameters(5)  # Pull best hp from 
 
         reg_evaluator = build_model(best_model[0])
+
     return reg_evaluator
 
 def plot_model(X_train, y_train, reg_evaluator):
@@ -395,7 +398,7 @@ def plot_1D(X_train, y_train, X_test, X_new, reg_evaluator, reg_learner, n_reps=
     plt.plot(X_train, y_train, "C5o", markersize=5, label='$D_{train}$')
     plt.plot(X_new, reg_learner.predict(X_new[:,np.newaxis]), 'k:', label="trained $f$")
     plt.errorbar(X_test, mean, yerr=var, ls='none', marker='s', c="C9",
-                markersize=4, capsize=2, label= 'results for $\mathcal{X}_{test}$\nsurrogate')
+                markersize=4, capsize=2, label= 'results for $\mathcal{X}_{test}$ surrogate')
     plt.xlabel("$x$")
     plt.ylabel("$y$", rotation=0)
     plt.legend(fontsize=13)
@@ -441,6 +444,8 @@ def posterior_mean_field(kernel_size, bias_size=0, dtype=None):
                         scale=1e-5 + tf.nn.softplus(c + t[..., n:])),
             reinterpreted_batch_ndims=1)),
     ])
+
+negloglik = lambda y, rv_y: -rv_y.log_prob(y)
 
 def build_vi(X_train, y_train):
     reg_evaluator = Sequential([
