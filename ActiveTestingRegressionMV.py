@@ -56,7 +56,7 @@ def find_mean_var_model(X_train, y_train, X_test, reg_evaluator, n_reps = 30, mo
             ind = np.random.choice(len(X_train), len(X_train), replace=True) # Randomly choose index number for X number of samples with replacement
             X_pert = X_train[ind] # Input values from training features from matching index
             y_pert = y_train[ind] # Input values from training responses from matching index
-            reg_evaluator.fit(X_pert, y_pert, epochs = 20, verbose=False) # fit model to bootstrapped data
+            reg_evaluator.fit(X_pert, y_pert, epochs = 10, verbose=False) # fit model to bootstrapped data
             y_pred[:,i] = reg_evaluator.predict(X_test).ravel() # Collect all bootstraps in one matrix
         
         meanVec = y_pred.mean(axis=1)
