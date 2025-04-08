@@ -1,4 +1,4 @@
-# Advancing Model Evaluation: Reducing Test Data Requirements for Regression with Small Datasets
+# Data-Efficient Evaluation of Regression Models with Scarce Labeled Data
 
 <p align="left">
 <b> Abstract </b>
