@@ -3,22 +3,52 @@
 <p align="left">
 <b> Abstract </b>
 <br>
-While large labeled datasets are crucial for training and evaluating overparameterized deep learning models, they are often unattainable in resource-constrained fields. To address this problem, previous efforts have largely focused on reducing training data requirements, but a critical and often-overlooked challenge remains: minimizing the amount of test data needed to accurately assess model performance.  Conventional uniform sampling methods require large test sets to provide reliable generalization estimates, making them impractical in data-scarce settings. Nonuniform sampling methods, while potentially more data-efficient, introduce bias that can distort performance evaluations. To overcome these limitations, we develop a new approach to regression task evaluation by designing four novel sampling methods based on a recently formulated unbiased test error estimator.  In real-world applications, we demonstrate that our approach reduces test data requirements to just 10% of the original test dataset --  yet achieves the same test error as using the full test set.  Compared to standard uniform sampling, which typically demands over 50% of the full test dataset to achieve the same results, our method represents a significant advancement in data efficiency.  This breakthrough has the potential to redefine model validation strategies across data-scarce domains, enabling more robust AI solutions with lower data demands.</p><br>
+The scarcity of large labeled datasets in many resource-constrained fields presents
+significant challenges for model training and evaluation. While previous efforts
+have mainly focused on reducing training data requirements, a critical and often-
+overlooked challenge remains: minimizing the amount of labeled test data needed
+to accurately assess model performance. Standard uniform sampling techniques,
+employed to select points for labeling from a pool of unlabeled test candidates,
+demand substantial test set sizes to guarantee robust generalization estimates.
+Nonuniform methods, though attractive, often introduce bias, compromising
+accurate performance evaluations. To address this gap, this work extends a recent
+surrogate sampling framework for regression evaluation by proposing four new
+surrogate models with nonuniform sampling distributions. These models encom-
+pass a spectrum of complexity, from deterministic neural networks (e.g., Monte
+Carlo dropout) to those leveraging probabilistic layers or weights (e.g., mean-field
+variational inference). Consequently, this work facilitates a thorough investiga-
+tion of the tradeoffs between surrogate complexity and test data requirements.
+Experimental results on synthetic and real-world datasets show that our approach
+can reduce the test data requirements to as little as 10% of the original test set
+while achieving the same test error as the full test set. In comparison, uniform
+sampling typically requires over 50% of the test data to achieve similar perfor-
+mance. By integrating diverse surrogate models into the nonuniform sampling
+framework, we significantly improve data efficiency in machine learning model
+evaluation and provide insights into training run requirements and computational
+costs.</p><br>
 
-<b>Keywords:</b> Regression modeling, Scarce data, Unbiased sampling, Neural networks, Active Testing
+<b>Keywords:</b> Data scarcity, Model evaluation, Active testing, Surrogate models, Computational efficiency
 
 <br>
 <br>
   The primary contributions of this work are summarized below, organized by the sampling technique employed:
   
-* <b> Deterministic Neural Network with Bootstrap Sampling</b> -- This approach extracts stochastic outputs from a deterministic neural network by fitting the surrogate model to 30 bootstrapped samples of the candidate test data.  While the deterministic neural network requires minimal assumptions, generating multiple bootstrapped datasets and refitting the surrogate model imposes a significant computational burden.  This method is particularly useful in low-dimensional settings with limited data, where resampling enhances the representativeness of the test set.
+  1. Deterministic Neural Network with Bootstrap Sampling: Building upon the bootstrap technique, this approach extracts stochastic out-puts from a deterministic neural network by training the surrogate model on multiple bootstrap samples of the training dataset. While the deterministic neural network requires minimal assumptions, generating multiple bootstrap datasets and refitting the surrogate model imposes significant computational overhead. This method is particularly useful in low-dimensional settings with limited data, where resampling improves the representativeness of the test set and enhances uncertainty quantification.
 
-* <b> Deterministic Neural Network with Permanent Dropout Layer</b> -- Building on the deterministic architecture used in the bootstrap sampling technique, this approach introduces a novel application of the Dropout Layer.  Traditionally, dropout is applied during training, where neurons are randomly deactivated at a specified rate, while all neurons remain active during inference.  To induce stochasticity in an otherwise deterministic model, we modify the dropout layer to remain active during inference, ensuring neurons continue to be randomly deactivated while the surrogate model is refit to the test data.  This modification enhances variability captured in the test set but increases computational overhead during surrogate model fitting.  
+2. Deterministic neural network with Monte Carlo dropout layer: This approach extends the deterministic architecture by incorporating Monte Carlo (MC) dropout during inference. Traditionally, dropout is applied during training to randomly deactivate neurons, while all neurons remain active during inference. MC dropout applies dropout layers at inference time, offering an inexpensive approximation of Bayesian neural networks by introducing stochasticity into an otherwise deterministic model. Since the model only needs to be trained once, this approach improves computational efficiency while still capturing meaningful model uncertainty with minimal assumptions.
 
-* <b> Stochastic Neural Network with Probabilistic Layer</b> -- To improve computational efficiency, this approach replaces the deterministic architecture with a neural network incorporating TensorFlow Probability's probabilistic output layer.  By leveraging the built-in stochasticity of probabilistic layers, this method eliminates the need for repeated surrogate model refitting, significantly reducing computational costs when constructing the sampling distribution.  This approach is particularly beneficial for large unlabeled data pools.  However, the increased stochasticity produces additional variance, reducing the stability of the test loss estimates compared to deterministic sampling techniques.
+3. Stochastic neural network with probabilistic output layer: In this approach, the deterministic neural network is appended with a probabilistic out-
+put layer from the TensorFlow Probability library. By leveraging the built-in stochasticity of probabilistic layers, this method eliminates the need for repeated
+surrogate model refitting, significantly reducing computational costs when constructing the sampling distribution. This approach is particularly beneficial when
+dealing with large pools of unlabeled data. However, the increased stochasticity can lead to additional variance in uncertainty estimates, reducing the stability of test
+loss estimates compared to deterministic sampling techniques.
 
-* <b> Stochastic Neural Network with Variational Inference</b> -- To further optimize computational efficiency, this approach integrates TensorFlow Probability's variational inference framework.  Experimental results indicate this method is more effective in high-dimensional, complex data scenarios with large pools of unlabeled data.  While variational inference reduces the computational burden associated with sampling distribution estimation, its effectiveness depends on proper calibration and sensitivity to underlying model assumptions.  Additionally, the initial surrogate model fitting can be computationally intensive for large datasets, requiring careful tuning to achieve reliable results. 
+4. Bayesian neural network with mean-field variational inference: This approach integrates variational inference (VI) through TensorFlow Probability’s
+framework. VI is particularly effective in high-dimensional, complex data scenarios with large pools of unlabeled data. While variational inference reduces the
+computational burden associated with estimating the sampling distribution, its effectiveness depends on proper calibration and sensitivity to underlying model
+assumptions. This method offers a more principled and scalable alternative when compared to traditional sampling techniques.
 
 <br>
+
 Compatibility for TFP and Keras_Tuner have been compromised with recent updates.  Use the following environment for successful run of files: Scikit-learn v1.4; Numpy v1.26.4; Pandas v2.2.1; Matplotlib v3.9; Keras v2.15; TF v2.15; TFP v0.23; KT v1.4.7.
 
